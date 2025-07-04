@@ -14,8 +14,7 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/image-converter" element={<ImageConverter/>} />
+        <Route path="/" element={<ImageConverter/>} />
       </Routes>
     </BrowserRouter>
   </StrictMode>

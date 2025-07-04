@@ -40,6 +40,14 @@ function ImageConverterForm() {
 
     async function handleSubmit(event) {
         event.preventDefault();
+        setError(null);
+        setResult([]);
+        if (selectedImages.length === 0) {
+            setError('Please select at least one image.');
+            return;
+        } 
+
+        
         const resultArray = [];
         for (const image of selectedImages) {
             try {
@@ -50,6 +58,7 @@ function ImageConverterForm() {
             } catch (error) {
                 console.error('Error converting image:', error);
                 setError(`Error converting ${image.name}: ${error.message}`);
+                continue;
             }
         }
 
@@ -58,36 +67,46 @@ function ImageConverterForm() {
 
     return (
     <>
-    <form id="image-converter-form" onSubmit={ handleSubmit }>
-        <input type="file" id="image-input" accept="image/*" multiple 
-            onChange={ handleFileChange }
-        /><br/>
+    <form id="image-converter-form" onSubmit={ handleSubmit } class="flex flex-col gap-4 m-auto ">
+        <fieldset>
+            <label htmlFor="image-input" class="btn text-center mb-4">Select Images (JPG/JPEG, PNG, WEBP)</label>
+            <input class="hidden" type="file" id="image-input" accept="image/*" multiple 
+                onChange={ handleFileChange }
+            />
+            <p class="text-center">Selected {selectedImages.length} images</p>
+        </fieldset>
 
-        <label htmlFor="quality-range">Quality (0.0 - 1.0):</label><br/>
-        <input type="number" id="quality-range" min="0" max="1" step="0.1" 
-            defaultValue={ quality } 
-            onChange={ handleQualityChange }
-        /><br/>
+        <fieldset>
+            <label htmlFor="quality-range">Quality (0.0 - 1.0):</label>
+            <input type="number" id="quality-range" min="0" max="1" step="0.1" 
+                defaultValue={ quality } 
+                onChange={ handleQualityChange }
+            />
+        </fieldset>
         
-        <label htmlFor="format-select">Select Output Format:</label><br/>
-        <select id="format-select" 
-            onChange={ handleFormatChange } 
-            value={ format }
-        >
-            <option value="jpeg">JPEG</option>
-            <option value="png">PNG</option>
-            <option value="webp">WEBP</option>
-        </select>
+        <fieldset>
+            <label htmlFor="format-select">Select Output Format:</label>
+            <select id="format-select" class="btn" 
+                onChange={ handleFormatChange } 
+                value={ format }
+            >
+                <option value="jpeg">JPEG</option>
+                <option value="png">PNG</option>
+                <option value="webp">WEBP</option>
+            </select>
+        </fieldset>
 
-        <button type="submit">Convert</button>
+        <input type="submit" class='btn btn-action' value="Convert"/>
     </form>
+
     <div id="result" class="flex flex-wrap m-auto gap-4">
-        {result.length > 0 ? result.map((item, index) => (
+        {result.length > 0 && result.map((item, index) => (
             <a key={index} href={item.url} download={item.name} class='block text-center'>
                 {item.name}
                 <img src={item.url} alt={item.name} class='m-auto w-64 aspect-square object-cover'/>
             </a>
-        )) : <p class="text-center m-auto">Select some images!</p>}
+        ))}
+
         {error && <p style={{color: 'red'}}>Error: {error}</p>}
     </div>
     </>
@@ -99,7 +118,6 @@ function ImageConverter() {
     return (
     <>
         <h1>Image Converter</h1>
-        <p>Convert images from one format to another.</p>
         <ImageConverterForm />
     </>
     );
