@@ -1,5 +1,4 @@
-import react from 'react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import JSZip from 'jszip';
 
 function convertImage(image, format, quality = 0.8) {
@@ -13,11 +12,8 @@ function convertImage(image, format, quality = 0.8) {
             canvas.height = img.height;
             ctx.drawImage(img, 0, 0);
             canvas.toBlob(blob => {
-            if (blob) {
-                    resolve(blob);
-            } else {
-                    reject(new Error('Conversion failed'));
-            }
+                if (blob) resolve(blob);
+                else reject(new Error('Conversion failed'));
             }, `image/${format}`, quality);
         };
 
@@ -26,11 +22,12 @@ function convertImage(image, format, quality = 0.8) {
    });
 }
 
-
+// I don't like how this works. 
+// Find a way to pass the blobs and the image names to the zip creation function.
 function createZipFile(blobsData) {
     return new Promise((resolve, reject) => {
         const zip = new JSZip();
-        const promises = blobsData.map(blob => zip.file(blob.name, blob.blob));
+        const promises = blobsData.map(({ blob, name }) => zip.file(name, blob));
         Promise.all(promises)
             .then(() => zip.generateAsync({ type: 'blob' }))
             .then(zipBlob => resolve(zipBlob))
@@ -52,28 +49,38 @@ function ImageConverterForm() {
     const handleQualityChange = (event) => setQuality(event.target.value);
     const handleFileChange = (event) => setSelectedImages(event.target.files);
 
-    async function handleSubmit(event) {
-        event.preventDefault();
-        setError(null);
+    function resetForm() {
+        setFormat('webp');
+        setQuality(0.8);
         setResult([]);
         setZipFile(null);
-        setIsLoading(true);
+        setError(null);
+        setIsLoading(false);
+        setConvertedCount(0);
+    }
+
+    async function handleSubmit(event) {
+        event.preventDefault();
+        resetForm();
 
         if (selectedImages.length === 0) {
             setError('Please select at least one image.');
             return;
         } 
 
+        const resultArray = []; // Hold the image URLs when ready for downloading
+        const blobsArray = []; // Array to hold blobs for ZIP file creation
 
-        const resultArray = [];
-        const blobsArray = [];
         for (const image of selectedImages) {
             try {
+                // Convert and get a downloadable URL
                 const convertedBlob = await convertImage(image, format, quality);
                 const url = URL.createObjectURL(convertedBlob);
                 const download = `${image.name.split('.')[0]}.${format}`;
+
                 resultArray.push({ url, name: download });
                 blobsArray.push({ blob: convertedBlob, name: download });
+
                 setConvertedCount(prevCount => prevCount + 1);
             } catch (error) {
                 console.error('Error converting image:', error);
@@ -83,6 +90,7 @@ function ImageConverterForm() {
         }
         setResult(resultArray);
 
+        // Create a ZIP file, if possible
         if (resultArray.length > 0) {
             try {
                 const zipBlob = await createZipFile(blobsArray);
@@ -99,7 +107,7 @@ function ImageConverterForm() {
 
     return (
     <>
-    <form id="image-converter-form" onSubmit={ handleSubmit } className="flex flex-col gap-4 m-auto ">
+    <form onSubmit={ handleSubmit } id="image-converter-form" className="flex flex-col gap-4 m-auto ">
         <fieldset>
             <label htmlFor="image-input" className="btn text-center mb-4">Select Images (JPG/JPEG, PNG, WEBP)</label>
             <input className="hidden" type="file" id="image-input" accept="image/*" multiple 
@@ -130,15 +138,16 @@ function ImageConverterForm() {
 
         <input type="submit" className='btn w-64 m-auto mb-4' value="Convert"/>
     </form>
-    
-    {zipFile && (
-        <a href={zipFile} download="converted_images.zip" className='btn btn-action mb-4'>
-            Download ZIP File
-        </a>
-    )}
+
+
     <div id="result" className="flex flex-col justify-center">
         {isLoading && <p>Loading...</p>}
+
         {convertedCount > 0 && <p>Converted {convertedCount} images</p>}
+
+        {zipFile && (
+            <a href={zipFile} download="converted_images.zip" className='btn btn-action mb-4'>Download ZIP File</a>
+        )}
 
         <div className="results-gallery flex flex-wrap m-auto gap-4">
             {result.length > 0 && result.map((item, index) => (
