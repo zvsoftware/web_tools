@@ -173,7 +173,7 @@ function ImageConverterForm() {
 function ImageConverter() {
 
     return (
-    <div className="flex flex-col items-center justify-center p-4 min-h-[80vh]">
+    <div className="flex flex-col items-center justify-center p-4 min-h-[75vh]">
         <h1>Image Converter</h1>
         <p>Select images to convert and optimize.</p>
         <ImageConverterForm />
