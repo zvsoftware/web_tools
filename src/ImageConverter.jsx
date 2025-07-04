@@ -47,7 +47,7 @@ function ImageConverterForm() {
             return;
         } 
 
-        
+
         const resultArray = [];
         for (const image of selectedImages) {
             try {
@@ -67,13 +67,13 @@ function ImageConverterForm() {
 
     return (
     <>
-    <form id="image-converter-form" onSubmit={ handleSubmit } class="flex flex-col gap-4 m-auto ">
+    <form id="image-converter-form" onSubmit={ handleSubmit } className="flex flex-col gap-4 m-auto ">
         <fieldset>
-            <label htmlFor="image-input" class="btn text-center mb-4">Select Images (JPG/JPEG, PNG, WEBP)</label>
-            <input class="hidden" type="file" id="image-input" accept="image/*" multiple 
+            <label htmlFor="image-input" className="btn text-center mb-4">Select Images (JPG/JPEG, PNG, WEBP)</label>
+            <input className="hidden" type="file" id="image-input" accept="image/*" multiple 
                 onChange={ handleFileChange }
             />
-            <p class="text-center">Selected {selectedImages.length} images</p>
+            <p className="text-center">Selected {selectedImages.length} images</p>
         </fieldset>
 
         <fieldset>
@@ -86,7 +86,7 @@ function ImageConverterForm() {
         
         <fieldset>
             <label htmlFor="format-select">Select Output Format:</label>
-            <select id="format-select" class="btn" 
+            <select id="format-select" className="btn" 
                 onChange={ handleFormatChange } 
                 value={ format }
             >
@@ -96,14 +96,14 @@ function ImageConverterForm() {
             </select>
         </fieldset>
 
-        <input type="submit" class='btn btn-action' value="Convert"/>
+        <input type="submit" className='btn btn-action' value="Convert"/>
     </form>
 
-    <div id="result" class="flex flex-wrap m-auto gap-4">
+    <div id="result" className="flex flex-wrap m-auto gap-4">
         {result.length > 0 && result.map((item, index) => (
-            <a key={index} href={item.url} download={item.name} class='block text-center'>
+            <a key={index} href={item.url} download={item.name} className='block text-center'>
                 {item.name}
-                <img src={item.url} alt={item.name} class='m-auto w-64 aspect-square object-cover'/>
+                <img src={item.url} alt={item.name} className='m-auto w-64 aspect-square object-cover'/>
             </a>
         ))}
 
