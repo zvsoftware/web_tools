@@ -50,8 +50,6 @@ function ImageConverterForm() {
     const handleFileChange = (event) => setSelectedImages(event.target.files);
 
     function resetForm() {
-        setFormat('webp');
-        setQuality(0.8);
         setResult([]);
         setZipFile(null);
         setError(null);
@@ -109,7 +107,7 @@ function ImageConverterForm() {
     <>
     <form onSubmit={ handleSubmit } id="image-converter-form" className="flex flex-col gap-4 m-auto ">
         <fieldset>
-            <label htmlFor="image-input" className="btn text-center mb-4">Select Images (JPG/JPEG, PNG, WEBP)</label>
+            <label htmlFor="image-input" className="btn btn-secondary text-center mb-4">Select Images (JPEG, PNG, WEBP)</label>
             <input className="hidden" type="file" id="image-input" accept="image/*" multiple 
                 onChange={ handleFileChange }
             />
@@ -118,7 +116,7 @@ function ImageConverterForm() {
 
         <fieldset>
             <label htmlFor="quality-range">Quality (0.0 - 1.0):</label>
-            <input type="number" id="quality-range" min="0" max="1" step="0.1" 
+            <input type="number" id="quality-range" class='ml-4' min="0" max="1" step="0.1" 
                 defaultValue={ quality } 
                 onChange={ handleQualityChange }
             />
@@ -126,7 +124,7 @@ function ImageConverterForm() {
         
         <fieldset>
             <label htmlFor="format-select">Select Output Format:</label>
-            <select id="format-select" className="btn" 
+            <select id="format-select" className="ml-4" 
                 onChange={ handleFormatChange } 
                 value={ format }
             >

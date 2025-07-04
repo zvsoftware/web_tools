@@ -2,13 +2,18 @@
 
 
 :root {
+    --text: #ffeeee;
+    --background: #111e24;
+    --primary: #573194;
+    --secondary: #003f52;
+
     font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
     line-height: 1.5;
     font-weight: 400;
 
     color-scheme: light dark;
-    color: rgba(255, 255, 255, 0.87);
-    background-color: #242424;
+    color: var(--text);
+    background-color: var(--background);
 
     font-synthesis: none;
     text-rendering: optimizeLegibility;
@@ -18,12 +23,10 @@
 
 a {
     font-weight: 500;
-    color: #646cff;
     text-decoration: inherit;
 }
 
 a:hover {
-    color: #535bf2;
 }
 
 body {
@@ -49,7 +52,18 @@ h1 {
 
 button,
 .btn {
-    @apply py-2 px-4 bg-gray-800 text-white rounded transition-colors duration-200 hover:bg-gray-700 inline-block;
+    background-color: var(--primary);
+    @apply py-2 px-4 rounded transition-colors duration-200 hover:bg-gray-700 inline-block font-bold;
+}
+
+.btn-secondary {
+    background-color: var(--secondary);
+}
+
+select,
+input {
+    background-color: var(--secondary);
+    @apply rounded py-2 px-4;
 }
 
 .btn-action {
