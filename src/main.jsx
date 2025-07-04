@@ -8,11 +8,12 @@ import {
   BrowserRouter, Routes, Route
 } from "react-router";
 
-const root = document.getElementById("root");
+const BASE = '/web_utils/';
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <main id="main-content">
-      <BrowserRouter>
+      <BrowserRouter basename={BASE}>
         <Routes>
           <Route path="/" element={<ImageConverter/>} />
         </Routes>
