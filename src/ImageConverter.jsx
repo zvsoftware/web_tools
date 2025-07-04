@@ -38,15 +38,17 @@ function createZipFile(blobsData) {
 function ImageConverterForm() {
     const [selectedImages, setSelectedImages] = useState([]);
     const [format, setFormat] = useState('webp');
-    const [quality, setQuality] = useState(0.8); 
+    const [quality, setQuality] = useState(8); 
     const [result, setResult] = useState([]);
     const [zipFile, setZipFile] = useState(null);
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [convertedCount, setConvertedCount] = useState(0);
+    const [originalSize, setOriginalSize] = useState(0);
+    const [convertedSize, setConvertedSize] = useState(0);
 
     const handleFormatChange = (event) => setFormat(event.target.value);
-    const handleQualityChange = (event) => setQuality(event.target.value);
+    const handleQualityChange = (event) => setQuality(parseInt(event.target.value) / 10);
     const handleFileChange = (event) => setSelectedImages(event.target.files);
 
     function resetForm() {
@@ -73,13 +75,16 @@ function ImageConverterForm() {
             try {
                 // Convert and get a downloadable URL
                 const convertedBlob = await convertImage(image, format, quality);
+
                 const url = URL.createObjectURL(convertedBlob);
                 const download = `${image.name.split('.')[0]}.${format}`;
-
+                
                 resultArray.push({ url, name: download });
                 blobsArray.push({ blob: convertedBlob, name: download });
 
                 setConvertedCount(prevCount => prevCount + 1);
+                setOriginalSize(prevSize => prevSize + image.size);
+                setConvertedSize(prevSize => prevSize + convertedBlob.size);
             } catch (error) {
                 console.error('Error converting image:', error);
                 setError(`Error converting ${image.name}: ${error.message}`);
@@ -89,7 +94,7 @@ function ImageConverterForm() {
         setResult(resultArray);
 
         // Create a ZIP file, if possible
-        if (resultArray.length > 0) {
+        if (resultArray.length > 1) {
             try {
                 const zipBlob = await createZipFile(blobsArray);
                 setZipFile(URL.createObjectURL(zipBlob));
@@ -105,24 +110,16 @@ function ImageConverterForm() {
 
     return (
     <>
-    <form onSubmit={ handleSubmit } id="image-converter-form" className="flex flex-col gap-4 m-auto ">
+    <form onSubmit={ handleSubmit } id="image-converter-form" className="flex flex-col gap-4 m-auto my-8">
         <fieldset>
-            <label htmlFor="image-input" className="btn btn-secondary text-center mb-4">Select Images (JPEG, PNG, WEBP)</label>
+            <label htmlFor="image-input" className="btn btn-secondary text-center">Select Images (JPEG, PNG, WEBP)</label>
             <input className="hidden" type="file" id="image-input" accept="image/*" multiple 
                 onChange={ handleFileChange }
             />
-            <p className="text-center">Selected {selectedImages.length} images</p>
+            {selectedImages.length > 0 && <p className="text-center">Selected {selectedImages.length} images</p>}
         </fieldset>
 
-        <fieldset>
-            <label htmlFor="quality-range">Quality (0.0 - 1.0):</label>
-            <input type="number" id="quality-range" class='ml-4' min="0" max="1" step="0.1" 
-                defaultValue={ quality } 
-                onChange={ handleQualityChange }
-            />
-        </fieldset>
-        
-        <fieldset>
+        {selectedImages.length > 0 && <fieldset>
             <label htmlFor="format-select">Select Output Format:</label>
             <select id="format-select" className="ml-4" 
                 onChange={ handleFormatChange } 
@@ -132,26 +129,36 @@ function ImageConverterForm() {
                 <option value="jpeg">JPEG</option>
                 <option value="png">PNG</option>
             </select>
-        </fieldset>
+        </fieldset> }
 
-        <input type="submit" className='btn w-64 m-auto mb-4' value="Convert"/>
+        { selectedImages.length > 0 && <>
+            {format !== "png" ? <fieldset>
+                <label htmlFor="quality-range">Quality (1-10):</label>
+                <input type="number" id="quality-range" class='ml-4' min="1" max="10"
+                    defaultValue={ quality } 
+                    onChange={ handleQualityChange }
+                /><br/>
+                <p>Higher values result in better quality but larger file sizes.</p>
+            </fieldset>: <p className='text-center'>PNG format does not support quality settings.</p>}
+        </>}
+
+        { selectedImages.length > 0 && <input type="submit" className='btn w-64 m-auto mt-8' value="Convert"/>}
     </form>
 
 
     <div id="result" className="flex flex-col justify-center">
         {isLoading && <p>Loading...</p>}
 
-        {convertedCount > 0 && <p>Converted {convertedCount} images</p>}
+        {convertedCount > 0 && <p className="mb-4 font-bold text-lg">Converted {convertedCount} images. Saved: {Math.round((1 - (convertedSize / originalSize)) * 100)}%</p>}
 
         {zipFile && (
-            <a href={zipFile} download="converted_images.zip" className='btn btn-action mb-4'>Download ZIP File</a>
+            <a href={zipFile} download="converted_images.zip" className='btn btn-success m-auto mb-4'>Download Converted Images</a>
         )}
 
-        <div className="results-gallery flex flex-wrap m-auto gap-4">
+        <div className="result-gallery">
             {result.length > 0 && result.map((item, index) => (
-                <a key={index} href={item.url} download={item.name} className='block text-center'>
-                    {item.name}
-                    <img src={item.url} alt={item.name} className='m-auto w-64 aspect-square object-cover'/>
+                <a key={index} href={item.url} download={item.name} className='block text-center result-img-wrap'>
+                    <img src={item.url} alt={item.name} className="result-img"/>
                 </a>
             ))}
         </div>
@@ -166,11 +173,11 @@ function ImageConverterForm() {
 function ImageConverter() {
 
     return (
-    <>
+    <div className="flex flex-col items-center justify-center p-4 min-h-[80vh]">
         <h1>Image Converter</h1>
+        <p>Select images to convert and optimize.</p>
         <ImageConverterForm />
-    </>
-    );
+    </div>);
 }
 
 export default ImageConverter;

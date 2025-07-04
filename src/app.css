@@ -4,10 +4,12 @@
 :root {
     --text: #ffeeee;
     --background: #111e24;
-    --primary: #573194;
-    --secondary: #003f52;
+    --bg-dark: #003f52;
+    --primary: #004ca3;
+    --secondary: #573194;
+    --success: #573194;  
 
-    font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+    font-family: "Noto Sans", Avenir, Helvetica, Arial, sans-serif;
     line-height: 1.5;
     font-weight: 400;
 
@@ -26,8 +28,6 @@ a {
     text-decoration: inherit;
 }
 
-a:hover {
-}
 
 body {
     margin: 0;
@@ -50,6 +50,10 @@ h1 {
     text-align: center;
 }
 
+#main-content {
+    min-height: 50vh;
+}
+
 button,
 .btn {
     background-color: var(--primary);
@@ -60,13 +64,29 @@ button,
     background-color: var(--secondary);
 }
 
-select,
-input {
-    background-color: var(--secondary);
-    @apply rounded py-2 px-4;
+
+.result-img {
+    @apply m-auto aspect-square object-cover;
+    height: 100%;
+    width: 100%;
 }
 
-.btn-action {
-    @apply bg-blue-600 hover:bg-blue-500;
+.result-gallery {
+    display: grid;
+    gap: 10px;
+    justify-content: center;
+    place-items: center;
+    grid-template-columns: repeat( auto-fit, minmax(128px, 1fr) );
+}
+
+select,
+input {
+    background-color: var(--bg-dark);
+    @apply rounded py-2 px-4 text-white;
+}
+
+.btn-success {
+    background-color: var(--success);
+    /* @apply text-black; */
 }
 
