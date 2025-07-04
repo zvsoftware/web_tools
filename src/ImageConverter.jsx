@@ -1,6 +1,6 @@
 import react from 'react';
 import { useEffect, useState } from 'react';
-
+import JSZip from 'jszip';
 
 function convertImage(image, format, quality = 0.8) {
    return new Promise((resolve, reject) => {
@@ -26,13 +26,27 @@ function convertImage(image, format, quality = 0.8) {
    });
 }
 
+
+function createZipFile(blobsData) {
+    return new Promise((resolve, reject) => {
+        const zip = new JSZip();
+        const promises = blobsData.map(blob => zip.file(blob.name, blob.blob));
+        Promise.all(promises)
+            .then(() => zip.generateAsync({ type: 'blob' }))
+            .then(zipBlob => resolve(zipBlob))
+            .catch(error => reject(error));
+    });
+}
+
 function ImageConverterForm() {
     const [selectedImages, setSelectedImages] = useState([]);
-    const [format, setFormat] = useState('jpeg');
+    const [format, setFormat] = useState('webp');
     const [quality, setQuality] = useState(0.8); 
     const [result, setResult] = useState([]);
+    const [zipFile, setZipFile] = useState(null);
     const [error, setError] = useState(null);
-
+    const [isLoading, setIsLoading] = useState(false);
+    const [convertedCount, setConvertedCount] = useState(0);
 
     const handleFormatChange = (event) => setFormat(event.target.value);
     const handleQualityChange = (event) => setQuality(event.target.value);
@@ -42,6 +56,9 @@ function ImageConverterForm() {
         event.preventDefault();
         setError(null);
         setResult([]);
+        setZipFile(null);
+        setIsLoading(true);
+
         if (selectedImages.length === 0) {
             setError('Please select at least one image.');
             return;
@@ -49,20 +66,35 @@ function ImageConverterForm() {
 
 
         const resultArray = [];
+        const blobsArray = [];
         for (const image of selectedImages) {
             try {
                 const convertedBlob = await convertImage(image, format, quality);
                 const url = URL.createObjectURL(convertedBlob);
                 const download = `${image.name.split('.')[0]}.${format}`;
                 resultArray.push({ url, name: download });
+                blobsArray.push({ blob: convertedBlob, name: download });
+                setConvertedCount(prevCount => prevCount + 1);
             } catch (error) {
                 console.error('Error converting image:', error);
                 setError(`Error converting ${image.name}: ${error.message}`);
                 continue;
             }
         }
-
         setResult(resultArray);
+
+        if (resultArray.length > 0) {
+            try {
+                const zipBlob = await createZipFile(blobsArray);
+                setZipFile(URL.createObjectURL(zipBlob));
+
+            } catch (error) {
+                console.error('Error creating ZIP file:', error);
+                setError(`Error creating ZIP file: ${error.message}`);
+            }
+        }
+
+        setIsLoading(false);
     }
 
     return (
@@ -90,25 +122,36 @@ function ImageConverterForm() {
                 onChange={ handleFormatChange } 
                 value={ format }
             >
+                <option value="webp">WEBP</option>
                 <option value="jpeg">JPEG</option>
                 <option value="png">PNG</option>
-                <option value="webp">WEBP</option>
             </select>
         </fieldset>
 
-        <input type="submit" className='btn btn-action' value="Convert"/>
+        <input type="submit" className='btn w-64 m-auto mb-4' value="Convert"/>
     </form>
+    
+    {zipFile && (
+        <a href={zipFile} download="converted_images.zip" className='btn btn-action mb-4'>
+            Download ZIP File
+        </a>
+    )}
+    <div id="result" className="flex flex-col justify-center">
+        {isLoading && <p>Loading...</p>}
+        {convertedCount > 0 && <p>Converted {convertedCount} images</p>}
 
-    <div id="result" className="flex flex-wrap m-auto gap-4">
-        {result.length > 0 && result.map((item, index) => (
-            <a key={index} href={item.url} download={item.name} className='block text-center'>
-                {item.name}
-                <img src={item.url} alt={item.name} className='m-auto w-64 aspect-square object-cover'/>
-            </a>
-        ))}
-
+        <div className="results-gallery flex flex-wrap m-auto gap-4">
+            {result.length > 0 && result.map((item, index) => (
+                <a key={index} href={item.url} download={item.name} className='block text-center'>
+                    {item.name}
+                    <img src={item.url} alt={item.name} className='m-auto w-64 aspect-square object-cover'/>
+                </a>
+            ))}
+        </div>
+        
         {error && <p style={{color: 'red'}}>Error: {error}</p>}
     </div>
+    
     </>
     )
 }
