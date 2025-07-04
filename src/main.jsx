@@ -8,7 +8,7 @@ import {
   BrowserRouter, Routes, Route
 } from "react-router";
 
-const BASE = '/web_utils/';
+const BASE = '/image-optimizer/';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
