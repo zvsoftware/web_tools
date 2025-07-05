@@ -8,7 +8,7 @@ import {
   BrowserRouter, Routes, Route
 } from "react-router";
 
-const BASE = '/image-optimizer/';
+const BASE = process.env.NODE_ENV === 'production' ? '/image-optimizer' : '/';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -19,7 +19,7 @@ createRoot(document.getElementById('root')).render(
         </Routes>
       </BrowserRouter>
     </main>
-    <footer className="footer py-12">
+    <footer className="footer py-12 text-gray-400">
       <p className="mb-4">View on <a href="https://github.com/timbatt/image-optimizer" target="_blank">Github</a></p>
       <p><a href="https://www.zoarvalleysoftware.com" target="_blank" rel="noopener noreferrer">© Zoar Valley Software LLC - 2025</a></p>
     </footer>

@@ -110,7 +110,7 @@ function ImageConverterForm() {
 
     return (
     <>
-    <form onSubmit={ handleSubmit } id="image-converter-form" className="flex flex-col gap-4 m-auto my-8">
+    <form onSubmit={ handleSubmit } id="image-converter-form" className="flex flex-col gap-4 m-auto my-8 mb-16">
         <fieldset>
             <label htmlFor="image-input" className="btn btn-secondary text-center">Select Images (JPEG, PNG, WEBP)</label>
             <input className="hidden" type="file" id="image-input" accept="image/*" multiple 
@@ -175,8 +175,13 @@ function ImageConverter() {
     return (
     <div className="flex flex-col items-center justify-center p-4 min-h-[75vh]">
         <h1>Image Converter</h1>
-        <p>Select images to convert and optimize.</p>
+        <p className="text-lg">Select images to convert and optimize.</p>
         <ImageConverterForm />
+
+        <p className="text-gray-400">
+            Your images are not stored on our server.<br/>
+            This means you can safely upload and convert your images without worrying about privacy or data retention.
+        </p>
     </div>);
 }
 
