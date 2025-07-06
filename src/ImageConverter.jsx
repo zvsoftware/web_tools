@@ -56,7 +56,7 @@ function ImageConverterForm() {
         setResult([]);
         setZipFile(null);
         setError(null);
-        setIsLoading(false);
+        setIsLoading(true);
         setConvertedCount(0);
         setOriginalSize(0);
         setConvertedSize(0);
@@ -148,14 +148,14 @@ function ImageConverterForm() {
         </>}
 
         { selectedImages.length > 0 && <input type="submit" className='btn w-64 m-auto mt-8' value="Convert"/>}
+        {isLoading && <p>Working...</p>}
     </form>
 
 
     <div id="result" className="flex flex-col justify-center">
-        {isLoading && <p>Loading...</p>}
 
         {convertedCount > 0 && <div className="mb-4 "> 
-            <p className="font-bold text-lg">Converted {convertedCount} image{convertedCount > 1 ? 's' : ''}.</p>
+            <p className="font-bold text-lg">Converted {convertedCount} image{convertedCount > 1 && 's'}.</p>
 
             {convertedSizeKB < originalSizeKB && done && <>
                 <p className="font-bold text-lg">Saved: {Math.round((1 - (convertedSizeKB / originalSizeKB)) * 100)}%</p>
