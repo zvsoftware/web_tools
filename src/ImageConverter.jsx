@@ -121,7 +121,7 @@ function ImageConverterForm() {
 
     return (
     <>
-    <form onSubmit={ handleSubmit } id="image-converter-form" className="flex flex-col gap-4 m-auto my-8 mb-16">
+    <form onSubmit={ handleSubmit } id="image-converter-form" className="flex flex-col gap-4 m-auto my-8">
         <fieldset>
             <label htmlFor="image-input" className="btn btn-secondary text-center">Select Images (JPEG, PNG, WEBP)</label>
             <input className="hidden" type="file" id="image-input" accept="image/*" multiple 
@@ -153,7 +153,7 @@ function ImageConverterForm() {
             </fieldset>: <p className='text-center'>PNG format does not support quality settings.</p>}
         </>}
 
-        { selectedImages.length > 0 && <input type="submit" className='btn w-64 m-auto mt-8' value="Convert"/>}
+        { selectedImages.length > 0 && <input type="submit" className='btn w-64 m-auto mt-4' value="Convert"/>}
         {isLoading && <p>Working...</p>}
     </form>
 
