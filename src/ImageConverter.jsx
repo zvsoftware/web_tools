@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import JSZip from 'jszip';
 
+
 function convertImage(image, format, quality = 0.8) {
    return new Promise((resolve, reject) => {
         const canvas = document.createElement('canvas');
@@ -113,6 +114,11 @@ function ImageConverterForm() {
         setDone(true);
     }
 
+    function makeFileName() {
+        const date = new Date();
+        return `${date.toISOString().split('T')[0]}_converted_images_${format}.zip`;
+    }
+
     return (
     <>
     <form onSubmit={ handleSubmit } id="image-converter-form" className="flex flex-col gap-4 m-auto my-8 mb-16">
@@ -166,7 +172,7 @@ function ImageConverterForm() {
 
 
         {zipFile && (
-            <a href={zipFile} download="converted_images.zip" className='btn btn-success m-auto mb-4'>Download Converted Images</a>
+            <a href={zipFile} download={ makeFileName() } className='btn btn-success m-auto mb-4'>Download Converted Images</a>
         )}
 
         <div className="result-gallery">
