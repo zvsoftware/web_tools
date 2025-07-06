@@ -43,9 +43,10 @@ function ImageConverterForm() {
     const [zipFile, setZipFile] = useState(null);
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [done, setDone] = useState(false);
     const [convertedCount, setConvertedCount] = useState(0);
-    const [originalSize, setOriginalSize] = useState(0);
-    const [convertedSize, setConvertedSize] = useState(0);
+    const [originalSizeKB, setOriginalSize] = useState(0);
+    const [convertedSizeKB, setConvertedSize] = useState(0);
 
     const handleFormatChange = (event) => setFormat(event.target.value);
     const handleQualityChange = (event) => setQuality(parseInt(event.target.value) / 10);
@@ -57,6 +58,9 @@ function ImageConverterForm() {
         setError(null);
         setIsLoading(false);
         setConvertedCount(0);
+        setOriginalSize(0);
+        setConvertedSize(0);
+        setDone(false);
     }
 
     async function handleSubmit(event) {
@@ -83,8 +87,8 @@ function ImageConverterForm() {
                 blobsArray.push({ blob: convertedBlob, name: download });
 
                 setConvertedCount(prevCount => prevCount + 1);
-                setOriginalSize(prevSize => prevSize + image.size);
-                setConvertedSize(prevSize => prevSize + convertedBlob.size);
+                setOriginalSize(prevSize => prevSize + Math.round(image.size / 1024) );
+                setConvertedSize(prevSize => prevSize + Math.round(convertedBlob.size / 1024));
             } catch (error) {
                 console.error('Error converting image:', error);
                 setError(`Error converting ${image.name}: ${error.message}`);
@@ -106,6 +110,7 @@ function ImageConverterForm() {
         }
 
         setIsLoading(false);
+        setDone(true);
     }
 
     return (
@@ -149,7 +154,16 @@ function ImageConverterForm() {
     <div id="result" className="flex flex-col justify-center">
         {isLoading && <p>Loading...</p>}
 
-        {convertedCount > 0 && <p className="mb-4 font-bold text-lg">Converted {convertedCount} images. Saved: {Math.round((1 - (convertedSize / originalSize)) * 100)}%</p>}
+        {convertedCount > 0 && <div className="mb-4 "> 
+            <p className="font-bold text-lg">Converted {convertedCount} image{convertedCount > 1 ? 's' : ''}.</p>
+
+            {convertedSizeKB < originalSizeKB && done && <>
+                <p className="font-bold text-lg">Saved: {Math.round((1 - (convertedSizeKB / originalSizeKB)) * 100)}%</p>
+                <p>Original Size: {originalSizeKB} KB</p>
+                <p>Converted Size: {convertedSizeKB} KB</p>
+            </>}
+        </div>}
+
 
         {zipFile && (
             <a href={zipFile} download="converted_images.zip" className='btn btn-success m-auto mb-4'>Download Converted Images</a>
