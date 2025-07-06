@@ -198,7 +198,7 @@ function ImageConverter() {
         <p className="text-lg">Select images to convert and optimize.</p>
         <ImageConverterForm />
 
-        <p className="text-gray-400">
+        <p className="text-gray-400 mt-4">
             Your images are not stored on our server.<br/>
             This means you can safely upload and convert your images without worrying about privacy or data retention.
         </p>
