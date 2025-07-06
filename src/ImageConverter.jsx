@@ -194,7 +194,7 @@ function ImageConverter() {
 
     return (
     <div className="flex flex-col items-center justify-center p-4 min-h-[75vh]">
-        <h1>Image Converter</h1>
+        <h1>Free Image Converter</h1>
         <p className="text-lg">Select images to convert and optimize.</p>
         <ImageConverterForm />
 
