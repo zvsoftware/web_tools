@@ -21,6 +21,7 @@ createRoot(document.getElementById('root')).render(
     </main>
     <footer className="footer py-12 text-gray-400">
       <p className="mb-4">View on <a href="https://github.com/timbatt/image-optimizer" target="_blank">Github</a></p>
+      <p>DISCLAIMER: We are not responsible for any potential data loss or data corruption that may result from the use of this tool.</p>
     </footer>
   </StrictMode>
 )
