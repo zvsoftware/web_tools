@@ -8,7 +8,7 @@ import {
   BrowserRouter, Routes, Route
 } from "react-router";
 
-const BASE = process.env.NODE_ENV === 'production' ? '/image-optimizer' : '/';
+const BASE = process.env.NODE_ENV === 'production' ? '/' : '/';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
