@@ -21,7 +21,10 @@ createRoot(document.getElementById('root')).render(
     </main>
     <footer className="footer py-12 text-gray-400">
       
-      <p className="mb-4"><a href="https://apps.zoarvalleysoftware.com/" target="_blank">Created by Zoar Valley Software LLC</a><br><a href="https://github.com/zvsoftware/web_tools" target="_blank">View on Github</a></p>
+      <p className="mb-4">
+        <a href="https://apps.zoarvalleysoftware.com/" target="_blank">Created by Zoar Valley Software LLC</a>
+        <br/>
+        <a href="https://github.com/zvsoftware/web_tools" target="_blank">View on Github</a></p>
       <p>DISCLAIMER: We are not responsible for any potential data loss or data corruption that may result from the use of this tool.</p>
     </footer>
   </StrictMode>
