@@ -39,7 +39,7 @@ function createZipFile(blobsData) {
 function ImageConverterForm() {
     const [selectedImages, setSelectedImages] = useState([]);
     const [format, setFormat] = useState('webp');
-    const [quality, setQuality] = useState(8); 
+    const [quality, setQuality] = useState(4); 
     const [result, setResult] = useState([]);
     const [zipFile, setZipFile] = useState(null);
     const [error, setError] = useState(null);
