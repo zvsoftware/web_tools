@@ -16,19 +16,27 @@
     <script type="module" src="/src/main.jsx"></script>
 
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org/", 
-      "@type": "Product", 
-      "name": "Free Image Optimizer",
-      "image": "",
-      "description": "Convert and optimize images on the web, for free.",
-      "brand": {
-        "@type": "Brand",
-        "name": "Zoar Valley Software LLC"
-      },
-			"sameAs": "https://github.com/zvsoftware",
-      "email": "zoarvalleysoftware@gmail.com",
-    }
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "@id": "https://apps.zoarvalleysoftware.com/#webapp",
+        "url": "https://apps.zoarvalleysoftware.com/",
+        "name": "Free Image Optimizer & Converter",
+        "applicationCategory": "MultimediaApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires HTML5, WebGL, or WebAssembly support.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "author": {
+          "@type": "ProfessionalService",
+          "name": "Zoar Valley Software LLC",
+          "url": "https://www.zoarvalleysoftware.com/"
+        },
+        "description": "A free, completely client-side web tool to convert and optimize JPEG, PNG, and WebP images instantly without uploading files to a server."
+      }
     </script>
   </body>
 </html>
